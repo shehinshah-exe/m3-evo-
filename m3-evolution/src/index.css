@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&family=Rajdhani:wght@700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,13 +12,40 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #000000;
   color: #ffffff;
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Heading styles - Motorsport inspired */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Bebas Neue', 'Inter', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+/* Numbers and stats - Technical feel */
+.stat-number, .spec-value {
+  font-family: 'Rajdhani', 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Body text - Clean and readable */
+p, span, div {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Bold text - Extra weight for emphasis */
+strong, b {
+  font-weight: 700;
 }

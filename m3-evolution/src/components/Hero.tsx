@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { cars } from '../data/cars';
 
 function Hero() {
   const [scrollY, setScrollY] = useState(0);
@@ -14,23 +13,25 @@ function Hero() {
   }, []);
 
   const heroHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-  const heroOpacity = Math.max(0, 1 - scrollY / heroHeight);
 
-  // Different parallax speeds for layers
-  const bgParallax = scrollY * 0.5;
-  const midParallax = scrollY * 0.7;
-  const foregroundParallax = scrollY * 0.3;
+  // Stripe animation based on scroll (0-100%)
+  const stripeProgress = Math.min(scrollY / heroHeight, 1);
+  
+  // Each stripe comes in at different times
+  const redStripeOffset = Math.max(0, (stripeProgress - 0) * 100); // Starts immediately
+  const purpleStripeOffset = Math.max(0, (stripeProgress - 0.15) * 100); // Slight delay
+  const blueStripeOffset = Math.max(0, (stripeProgress - 0.3) * 100); // More delay
 
-  // Calculate color transition based on scroll
-  const scrollProgress = Math.min(scrollY / (heroHeight * 2), 1);
+  // Logo fades in faster and sooner
+  const logoOpacity = Math.max(0, Math.min(1, (stripeProgress - 0.3) * 4)); 
+  const logoScale = Math.max(0.8, Math.min(1, 0.8 + (stripeProgress - 0.3) * 0.8));
+
+  // Calculate color transition for M letter (after hero scroll is done)
+  const scrollProgress = Math.min(scrollY / (heroHeight * 7), 1); 
 
   const getStageColors = () => {
     if (scrollProgress < 0.33) {
-      return {
-        blue: '#1C69D4',
-        purple: '#B02A8F',
-        red: '#E4002B'
-      };
+      return { blue: '#1C69D4', purple: '#B02A8F', red: '#E4002B' };
     } else if (scrollProgress < 0.66) {
       const progress = (scrollProgress - 0.33) / 0.33;
       return {
@@ -51,275 +52,176 @@ function Hero() {
   const colors = getStageColors();
 
   return (
-    <section className="h-screen relative flex items-center justify-center overflow-hidden bg-black">
-      {/* Animated background gradient - slowest parallax */}
-      <div
-        className="absolute inset-0 bg-gradient-to-br from-gray-950 via-black to-gray-900"
-        style={{
-          transform: `translateY(${bgParallax}px)`,
-        }}
-      />
-
-      {/* Grid pattern overlay for depth */}
-      <div
-        className="absolute inset-0 opacity-5"
-        style={{
-          backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent)',
-          backgroundSize: '50px 50px',
-          transform: `translateY(${bgParallax * 0.3}px)`,
-        }}
-      />
-
-      {/* M stripe pattern background - evolving colors */}
-      <div
-        className="absolute top-0 left-0 w-full h-2 flex transition-colors duration-300"
-        style={{
-          transform: `translateY(${scrollY * 0.2}px)`,
-        }}
-      >
-        <div className="flex-1" style={{ backgroundColor: colors.blue }} />
-        <div className="flex-1" style={{ backgroundColor: colors.purple }} />
-        <div className="flex-1" style={{ backgroundColor: colors.red }} />
-      </div>
-
-      <div
-        className="absolute bottom-0 left-0 w-full h-2 flex transition-colors duration-300"
-        style={{
-          transform: `translateY(${-scrollY * 0.2}px)`,
-        }}
-      >
-        <div className="flex-1" style={{ backgroundColor: colors.blue }} />
-        <div className="flex-1" style={{ backgroundColor: colors.purple }} />
-        <div className="flex-1" style={{ backgroundColor: colors.red }} />
-      </div>
-
-      {/* Parallax car images - multiple layers */}
-      <div className="absolute inset-0 z-0">
-        {/* Background layer - slowest */}
+    <section className="h-[800vh] relative"> 
+      {/* Sticky container for the hero view */}
+      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+        
+        {/* Metallic graphite background - BRIGHTER */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800"></div>
+        
+        {/* Metallic shine effect */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-gray-500 to-transparent opacity-20"></div>
+        
+        {/* Subtle texture overlay */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 opacity-20"
           style={{
-            transform: `translateY(${scrollY * 0.2}px)`,
-            opacity: heroOpacity * 0.15,
+            backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.3) 1px, transparent 0)',
+            backgroundSize: '32px 32px',
           }}
-        >
-          <img
-            src={cars[0].image}
-            alt={cars[0].model}
-            className="absolute top-1/2 left-1/2 w-full max-w-6xl transform -translate-x-1/2 -translate-y-1/2 scale-125 blur-sm"
-          />
-        </div>
+        />
 
-        {/* Mid-background layer */}
+        {/* Carbon fiber texture */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 opacity-10"
           style={{
-            transform: `translateY(${scrollY * 0.35}px)`,
-            opacity: heroOpacity * 0.25,
+            backgroundImage: `repeating-linear-gradient(
+              0deg,
+              rgba(255,255,255,0.1) 0px,
+              transparent 2px,
+              transparent 4px,
+              rgba(255,255,255,0.1) 6px
+            ),
+            repeating-linear-gradient(
+              90deg,
+              rgba(255,255,255,0.1) 0px,
+              transparent 2px,
+              transparent 4px,
+              rgba(255,255,255,0.1) 6px
+            )`,
           }}
-        >
-          <img
-            src={cars[2].image}
-            alt={cars[2].model}
-            className="absolute top-1/2 left-1/2 w-4/5 max-w-5xl transform -translate-x-1/2 -translate-y-1/2 scale-110"
-          />
-        </div>
+        />
 
-        {/* Foreground layer - fastest */}
-        <div
-          className="absolute inset-0"
-          style={{
-            transform: `translateY(${scrollY * 0.5}px) scale(${1 + scrollY * 0.0002})`,
-            opacity: heroOpacity * 0.3,
-          }}
-        >
-          <img
-            src={cars[5].image}
-            alt={cars[5].model}
-            className="absolute top-1/2 left-1/2 w-4/5 max-w-4xl transform -translate-x-1/2 -translate-y-1/2"
-          />
-        </div>
-      </div>
-
-      {/* Floating M-colored particles/glows with parallax */}
-      <div
-        className="absolute top-1/4 left-0 w-96 h-96 rounded-full filter blur-3xl opacity-10 transition-all duration-300"
-        style={{
-          backgroundColor: colors.blue,
-          transform: `translate(${scrollY * 0.15}px, ${scrollY * 0.25}px)`,
-        }}
-      />
-      <div
-        className="absolute top-1/4 right-0 w-96 h-96 rounded-full filter blur-3xl opacity-10 transition-all duration-300"
-        style={{
-          backgroundColor: colors.red,
-          transform: `translate(${-scrollY * 0.15}px, ${scrollY * 0.3}px)`,
-        }}
-      />
-      <div
-        className="absolute bottom-1/4 left-1/2 w-96 h-96 rounded-full filter blur-3xl opacity-10 transition-all duration-300"
-        style={{
-          backgroundColor: colors.purple,
-          transform: `translate(-50%, ${scrollY * 0.2}px)`,
-        }}
-      />
-
-      {/* Diagonal M-stripe accent lines with parallax */}
-      <div
-        className="absolute top-1/3 -left-48 w-96 h-1 transform -rotate-45"
-        style={{
-          background: `linear-gradient(90deg, transparent, ${colors.blue}, transparent)`,
-          transform: `rotate(-45deg) translateX(${scrollY * 0.4}px)`,
-          opacity: heroOpacity * 0.3,
-        }}
-      />
-      <div
-        className="absolute top-2/3 -right-48 w-96 h-1 transform rotate-45"
-        style={{
-          background: `linear-gradient(90deg, transparent, ${colors.red}, transparent)`,
-          transform: `rotate(45deg) translateX(${-scrollY * 0.4}px)`,
-          opacity: heroOpacity * 0.3,
-        }}
-      />
-
-      {/* Title with parallax - moves slower than scroll */}
-      <div
-        className="relative z-10 text-center px-4"
-        style={{
-          opacity: heroOpacity,
-          transform: `translateY(${scrollY * 0.4}px)`,
-        }}
-      >
-        {/* M badge inspired top accent - with parallax */}
-        <div
-          className="flex items-center justify-center gap-1 mb-8"
-          style={{
-            transform: `translateY(${scrollY * 0.3}px)`,
-          }}
-        >
+        {/* Diagonal M Color Stripes - Animated on scroll */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Red stripe - comes first */}
           <div
-            className="w-16 h-1.5 transform -skew-x-12 transition-all duration-300"
+            className="absolute w-[250%] h-[120%] origin-top-left"
             style={{
-              backgroundColor: colors.blue,
-              width: `${64 - scrollY * 0.05}px`,
+              background: 'linear-gradient(to bottom, rgba(228, 0, 43, 0.95), rgba(228, 0, 43, 0.85))',
+              transform: `translateX(-40%) translateY(${-150 + redStripeOffset * 1.5}%) rotate(60deg)`,
+              top: '0%',
+              left: '-25%',
             }}
           />
+
+          {/* Purple stripe - comes second */}
           <div
-            className="w-16 h-1.5 transform -skew-x-12 transition-all duration-300"
+            className="absolute w-[250%] h-[120%] origin-top-left"
             style={{
-              backgroundColor: colors.purple,
-              width: `${64 - scrollY * 0.05}px`,
+              background: 'linear-gradient(to bottom, rgba(176, 42, 143, 0.95), rgba(176, 42, 143, 0.85))',
+              transform: `translateX(-40%) translateY(${-150 + purpleStripeOffset * 1.5}%) rotate(60deg)`,
+              top: '0%',
+              left: '-25%',
             }}
           />
+
+          {/* Blue stripe - comes last */}
           <div
-            className="w-16 h-1.5 transform -skew-x-12 transition-all duration-300"
+            className="absolute w-[250%] h-[120%] origin-top-left"
             style={{
-              backgroundColor: colors.red,
-              width: `${64 - scrollY * 0.05}px`,
+              background: 'linear-gradient(to bottom, rgba(28, 105, 212, 0.95), rgba(28, 105, 212, 0.85))',
+              transform: `translateX(-40%) translateY(${-150 + blueStripeOffset * 1.5}%) rotate(60deg)`,
+              top: '0%',
+              left: '-25%',
             }}
           />
         </div>
 
-        {/* BMW M style logo - subtle parallax */}
+        {/* Content - Fades in after stripes */}
         <div
-          className="mb-6"
+          className="relative z-10 text-center px-4 max-w-6xl mx-auto transition-all duration-700"
           style={{
-            transform: `translateY(${scrollY * 0.35}px) scale(${1 - scrollY * 0.0005})`,
+            opacity: logoOpacity,
+            transform: `scale(${logoScale}) translateY(${(1 - logoOpacity) * 50}px)`,
           }}
         >
-          <span className="text-6xl md:text-8xl font-black tracking-tighter text-white">
-            BMW
-          </span>
-        </div>
-
-        {/* M3 Title - hero element with dramatic parallax */}
-        <h1
-          className="text-8xl md:text-[12rem] font-black tracking-tighter leading-none mb-4"
-          style={{
-            transform: `translateY(${scrollY * 0.25}px) scale(${1 + scrollY * 0.0003})`,
-          }}
-        >
-          <span
-            className="transition-all duration-300"
-            style={{
-              background: `linear-gradient(90deg, ${colors.blue}, ${colors.purple}, ${colors.red})`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            M3
-          </span>
-        </h1>
-
-        {/* EVOLUTION text */}
-        <h2
-          className="text-4xl md:text-6xl font-black tracking-wider uppercase text-white mb-4"
-          style={{
-            transform: `translateY(${scrollY * 0.45}px)`,
-          }}
-        >
-          EVOLUTION
-        </h2>
-
-        {/* Subtitle */}
-        <p
-          className="text-lg md:text-xl tracking-widest uppercase font-bold text-bmw-silver"
-          style={{
-            transform: `translateY(${scrollY * 0.5}px)`,
-          }}
-        >
-          Six Generations of M Power
-        </p>
-
-        {/* M badge inspired bottom accent */}
-        <div
-          className="flex items-center justify-center gap-1 mt-8"
-          style={{
-            transform: `translateY(${scrollY * 0.55}px)`,
-          }}
-        >
-          <div
-            className="w-16 h-1.5 transform -skew-x-12 transition-all duration-300"
-            style={{
-              backgroundColor: colors.blue,
-              width: `${64 - scrollY * 0.05}px`,
-            }}
-          />
-          <div
-            className="w-16 h-1.5 transform -skew-x-12 transition-all duration-300"
-            style={{
-              backgroundColor: colors.purple,
-              width: `${64 - scrollY * 0.05}px`,
-            }}
-          />
-          <div
-            className="w-16 h-1.5 transform -skew-x-12 transition-all duration-300"
-            style={{
-              backgroundColor: colors.red,
-              width: `${64 - scrollY * 0.05}px`,
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Scroll indicator with bounce animation */}
-      <div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce"
-        style={{ opacity: Math.max(0, 1 - scrollY / 100) }}
-      >
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-6 h-10 border-2 border-bmw-silver rounded-full p-1">
-            <div className="w-1 h-3 bg-bmw-silver rounded-full mx-auto animate-pulse" />
+          {/* BMW Roundel Logo */}
+          <div className="mb-12">
+            <div className="inline-flex items-center justify-center">
+              <div className="relative w-28 h-28 md:w-36 md:h-36">
+                <div className="absolute inset-0 rounded-full border-[6px] border-white shadow-2xl"></div>
+                <div className="absolute inset-0 rounded-full overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-white"></div>
+                  <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[#1C69D4]"></div>
+                  <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[#1C69D4]"></div>
+                  <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-white"></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <span className="text-xs text-bmw-silver uppercase tracking-wider">Scroll</span>
+
+          {/* M3 Title */}
+          <h1 className="font-heading text-[10rem] md:text-[18rem] leading-none tracking-tighter mb-8">
+            <span
+              className="inline-block transition-all duration-300"
+              style={{
+                background: `linear-gradient(135deg, ${colors.blue}, ${colors.purple}, ${colors.red})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.3))',
+              }}
+            >
+              M
+            </span>
+            <span className="text-white" style={{ filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.3))' }}>3</span>
+          </h1>
+
+          {/* EVOLUTION text */}
+          <h2 className="font-heading text-5xl md:text-8xl tracking-[0.3em] uppercase text-white mb-8 drop-shadow-2xl">
+            EVOLUTION
+          </h2>
+
+          {/* Subtitle */}
+          <p className="font-body text-xl md:text-2xl tracking-widest uppercase font-light text-white drop-shadow-lg">
+            Six Generations of M Power
+          </p>
+        </div>
+
+        {/* Top M stripe */}
+        <div
+          className="absolute top-0 left-0 w-full h-3 flex z-20"
+          style={{ 
+            opacity: logoOpacity,
+            transform: `translateY(${scrollY * 0.2}px)` 
+          }}
+        >
+          <div className="flex-1" style={{ backgroundColor: colors.blue }} />
+          <div className="flex-1" style={{ backgroundColor: colors.purple }} />
+          <div className="flex-1" style={{ backgroundColor: colors.red }} />
+        </div>
+
+        {/* Bottom M stripe */}
+        <div
+          className="absolute bottom-0 left-0 w-full h-3 flex z-20"
+          style={{ 
+            opacity: logoOpacity,
+            transform: `translateY(${-scrollY * 0.2}px)` 
+          }}
+        >
+          <div className="flex-1" style={{ backgroundColor: colors.blue }} />
+          <div className="flex-1" style={{ backgroundColor: colors.purple }} />
+          <div className="flex-1" style={{ backgroundColor: colors.red }} />
+        </div>
+
+        {/* Scroll indicator */}
+        <div
+          className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20 animate-bounce transition-opacity duration-300"
+          style={{ opacity: Math.max(0, 1 - scrollY / 200) }}
+        >
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-7 h-11 border-2 border-white rounded-full p-1.5 flex justify-center">
+              <div className="w-1.5 h-3 bg-white rounded-full animate-pulse" />
+            </div>
+            <span className="font-tech text-xs text-white uppercase tracking-[0.2em]">Scroll</span>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-// Helper function to interpolate between two hex colors
 function interpolateColor(color1: string, color2: string, factor: number): string {
   const c1 = parseInt(color1.slice(1), 16);
   const c2 = parseInt(color2.slice(1), 16);

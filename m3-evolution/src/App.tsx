@@ -5,7 +5,7 @@ import { cars } from './data/cars';
 
 function App() {
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white">
       <Hero />
 
       <Marquee text="M POWER • PRECISION ENGINEERING • MOTORSPORT HERITAGE" />
