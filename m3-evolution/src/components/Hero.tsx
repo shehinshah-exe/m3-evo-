@@ -27,6 +27,8 @@ function Hero() {
   const logoScale = Math.max(0.8, Math.min(1, 0.8 + (stripeProgress - 0.3) * 0.8));
 
   // Calculate color transition for M letter (after hero scroll is done)
+  // NOTE: This color transition will now be applied to the 'EVOLUTION' text,
+  // as the M logo itself has its fixed colors.
   const scrollProgress = Math.min(scrollY / (heroHeight * 7), 1); 
 
   const getStageColors = () => {
@@ -52,7 +54,7 @@ function Hero() {
   const colors = getStageColors();
 
   return (
-    <section className="h-[800vh] relative"> 
+    <section className="h-[500vh] relative"> 
       {/* Sticky container for the hero view */}
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         
@@ -151,25 +153,31 @@ function Hero() {
             </div>
           </div>
 
-          {/* M3 Title */}
-          <h1 className="font-heading text-[10rem] md:text-[18rem] leading-none tracking-tighter mb-8">
-            <span
-              className="inline-block transition-all duration-300"
+          {/* M3 Logo (Image) */}
+          <div className="mb-8">
+            <img 
+              src="/bmw-m-logo.png" 
+              alt="BMW M3 Logo" 
+              className="mx-auto" // Center the image
               style={{
-                background: `linear-gradient(135deg, ${colors.blue}, ${colors.purple}, ${colors.red})`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                maxWidth: '600px', // Adjust size as needed
+                width: '100%',
+                height: 'auto',
                 filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.3))',
               }}
-            >
-              M
-            </span>
-            <span className="text-white" style={{ filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.3))' }}>3</span>
-          </h1>
+            />
+          </div>
 
           {/* EVOLUTION text */}
-          <h2 className="font-heading text-5xl md:text-8xl tracking-[0.3em] uppercase text-white mb-8 drop-shadow-2xl">
+          <h2 
+            className="font-heading text-5xl md:text-8xl tracking-[0.3em] uppercase mb-8 drop-shadow-2xl"
+            style={{
+              background: `linear-gradient(135deg, ${colors.blue}, ${colors.purple}, ${colors.red})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
             EVOLUTION
           </h2>
 

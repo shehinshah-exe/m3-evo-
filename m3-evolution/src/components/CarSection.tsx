@@ -57,13 +57,23 @@ function CarSection({ car, index }: CarSectionProps) {
       >
         {isEven ? (
           <>
-            <Car3DViewer carName={car.model} />
+            <Car3DViewer 
+              carName={car.model} 
+              modelPath={car.modelPath}
+              scale={car.scale}
+              position={car.position}
+            />
             <CarInfo car={car} accentColor={accentColor} />
           </>
         ) : (
           <>
             <CarInfo car={car} accentColor={accentColor} />
-            <Car3DViewer carName={car.model} />
+            <Car3DViewer 
+              carName={car.model} 
+              modelPath={car.modelPath}
+              scale={car.scale}
+              position={car.position}
+            />
           </>
         )}
       </div>
